@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How to set up iBridge"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:text="iBridge mirrors this phone's notifications to an iPhone and Apple Watch using the free ntfy service.\n\n1) On the iPhone, install the free &quot;ntfy&quot; app from the App Store.\n\n2) Pick a private channel below: tap &quot;Generate random&quot; to create an unguessable topic, then &quot;Save topic&quot;. Keep it secret - anyone who knows it can read your notifications.\n\n3) In the ntfy app on the iPhone, tap + and subscribe to the SAME topic on the default server (ntfy.sh). Tap Allow when it asks about notifications.\n\nThen go back, tap &quot;Grant notification access&quot;, enable iBridge, and turn mirroring on. Notifications will reach the iPhone and mirror to the Apple Watch automatically.\n\nUse &quot;Share topic&quot; to send the topic to whoever owns the iPhone/Watch." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your ntfy topic"
+            android:paddingTop="18dp" />
+
+        <EditText
+            android:id="@+id/topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="ibridge-xxxxxxxx" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/generate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Generate random" />
+
+            <Button
+                android:id="@+id/copy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Copy" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save topic" />
+
+        <Button
+            android:id="@+id/share"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share topic with someone" />
+
+    </LinearLayout>
+</ScrollView>
