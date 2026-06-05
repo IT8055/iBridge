@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SetupActivity" android:exported="false" />
-        <activity android:name=".FilterActivity" android:exported="false" />
         <service
             android:name=".NotificationListener"
             android:exported="true"

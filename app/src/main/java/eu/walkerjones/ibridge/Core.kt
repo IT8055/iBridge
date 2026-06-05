@@ -1,12 +1,14 @@
 package eu.walkerjones.ibridge
 
 import android.content.Context
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
 object Store {
     private const val NAME = "ibridge"
+    private const val LOG_CAP = 200
     private fun p(c: Context) = c.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
     fun topic(c: Context): String = p(c).getString("topic", "") ?: ""
@@ -41,13 +43,117 @@ object Store {
         p(c).edit().putString("quiet_start", s).putString("quiet_end", e).apply()
     }
 
+    private fun nowHHmm(): String =
+        java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date())
+
+    /** True if the current time falls inside [start, end). Handles windows that wrap past midnight. */
+    private fun inWindow(now: String, start: String, end: String): Boolean =
+        if (start <= end) now >= start && now < end else now >= start || now < end
+
     fun inQuietHours(c: Context): Boolean {
         if (!quietEnabled(c)) return false
-        val now = java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date())
-        val s = quietStart(c)
-        val e = quietEnd(c)
-        return if (s <= e) now >= s && now < e else now >= s || now < e
+        return inWindow(nowHHmm(), quietStart(c), quietEnd(c))
     }
+
+    // ---- Per-app schedules ----
+
+    enum class SchedMode { DEFAULT, ALWAYS, WINDOW }
+
+    data class AppSchedule(
+        val mode: SchedMode = SchedMode.DEFAULT,
+        val start: String = "08:00",
+        val end: String = "22:00"
+    )
+
+    fun appSchedule(c: Context, pkg: String): AppSchedule {
+        val obj = JSONObject(p(c).getString("schedules", "{}") ?: "{}")
+        val e = obj.optJSONObject(pkg) ?: return AppSchedule()
+        val mode = try {
+            SchedMode.valueOf(e.optString("mode", "DEFAULT"))
+        } catch (ex: Exception) {
+            SchedMode.DEFAULT
+        }
+        return AppSchedule(mode, e.optString("start", "08:00"), e.optString("end", "22:00"))
+    }
+
+    fun setAppSchedule(c: Context, pkg: String, s: AppSchedule) {
+        synchronized(Store) {
+            val obj = JSONObject(p(c).getString("schedules", "{}") ?: "{}")
+            if (s.mode == SchedMode.DEFAULT) {
+                obj.remove(pkg)
+            } else {
+                obj.put(pkg, JSONObject().apply {
+                    put("mode", s.mode.name)
+                    put("start", s.start)
+                    put("end", s.end)
+                })
+            }
+            p(c).edit().putString("schedules", obj.toString()).apply()
+        }
+    }
+
+    // ---- Message log ----
+
+    enum class Outcome { SENT, FAILED, BLOCKED_OFF, BLOCKED_APP, BLOCKED_SCHEDULE }
+
+    data class LogEntry(
+        val pkg: String,
+        val label: String,
+        val title: String,
+        val text: String,
+        val ts: Long,
+        val outcome: Outcome
+    )
+
+    fun addLog(c: Context, entry: LogEntry) {
+        synchronized(Store) {
+            val arr = JSONArray(p(c).getString("log", "[]") ?: "[]")
+            val obj = JSONObject().apply {
+                put("pkg", entry.pkg)
+                put("label", entry.label)
+                put("title", entry.title)
+                put("text", entry.text)
+                put("ts", entry.ts)
+                put("outcome", entry.outcome.name)
+            }
+            // Newest first; trim to the cap.
+            val trimmed = JSONArray()
+            trimmed.put(obj)
+            val keep = minOf(arr.length(), LOG_CAP - 1)
+            for (i in 0 until keep) trimmed.put(arr.get(i))
+            p(c).edit().putString("log", trimmed.toString()).apply()
+        }
+    }
+
+    private fun parseLog(c: Context): List<LogEntry> {
+        val arr = JSONArray(p(c).getString("log", "[]") ?: "[]")
+        val list = ArrayList<LogEntry>(arr.length())
+        for (i in 0 until arr.length()) {
+            val e = arr.getJSONObject(i)
+            val outcome = try {
+                Outcome.valueOf(e.optString("outcome", "SENT"))
+            } catch (ex: Exception) {
+                Outcome.SENT
+            }
+            list.add(
+                LogEntry(
+                    e.optString("pkg"),
+                    e.optString("label"),
+                    e.optString("title"),
+                    e.optString("text"),
+                    e.optLong("ts", 0L),
+                    outcome
+                )
+            )
+        }
+        return list
+    }
+
+    /** Whole log, newest first. */
+    fun log(c: Context): List<LogEntry> = parseLog(c)
+
+    /** Most recent logged entry for a package, or null. */
+    fun lastForApp(c: Context, pkg: String): LogEntry? = parseLog(c).firstOrNull { it.pkg == pkg }
 
     data class SeenApp(val pkg: String, val label: String, val count: Int)
 
@@ -75,11 +181,22 @@ object Store {
         return list
     }
 
-    fun shouldSend(c: Context, pkg: String): Boolean {
-        if (!enabled(c)) return false
-        if (isBlocked(c, pkg)) return false
-        if (inQuietHours(c)) return false
-        return true
+    /**
+     * Decides what should happen to a notification from [pkg] and why.
+     * Returns [Outcome.SENT] when it should be delivered; otherwise the blocking reason.
+     */
+    fun evaluate(c: Context, pkg: String): Outcome {
+        if (!enabled(c)) return Outcome.BLOCKED_OFF
+        if (isBlocked(c, pkg)) return Outcome.BLOCKED_APP
+        val sched = appSchedule(c, pkg)
+        when (sched.mode) {
+            SchedMode.ALWAYS -> {}
+            SchedMode.WINDOW ->
+                if (!inWindow(nowHHmm(), sched.start, sched.end)) return Outcome.BLOCKED_SCHEDULE
+            SchedMode.DEFAULT ->
+                if (inQuietHours(c)) return Outcome.BLOCKED_SCHEDULE
+        }
+        return Outcome.SENT
     }
 }
 

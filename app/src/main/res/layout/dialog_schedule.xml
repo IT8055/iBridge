@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="8dp">
+
+    <RadioGroup
+        android:id="@+id/mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/mode_default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Use default quiet hours" />
+
+        <RadioButton
+            android:id="@+id/mode_always"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Always allow" />
+
+        <RadioButton
+            android:id="@+id/mode_window"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Only during a window" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/window_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp" />
+
+        <EditText
+            android:id="@+id/start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="time"
+            android:hint="08:00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="to"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
+
+        <EditText
+            android:id="@+id/end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="time"
+            android:hint="22:00" />
+    </LinearLayout>
+</LinearLayout>

@@ -25,7 +25,17 @@ class NotificationListener : NotificationListenerService() {
         }
 
         Store.recordSeen(this, sbn.packageName, appName)
-        if (!Store.shouldSend(this, sbn.packageName)) return
+
+        val pkg = sbn.packageName
+        val ts = System.currentTimeMillis()
+        fun record(outcome: Store.Outcome) =
+            Store.addLog(this, Store.LogEntry(pkg, appName, title, text, ts, outcome))
+
+        val outcome = Store.evaluate(this, pkg)
+        if (outcome != Store.Outcome.SENT) {
+            record(outcome)
+            return
+        }
 
         @Suppress("DEPRECATION")
         val priority = when {
@@ -34,6 +44,8 @@ class NotificationListener : NotificationListenerService() {
             else -> 3
         }
 
-        Ntfy.publish(this, title, text, priority)
+        Ntfy.publish(this, title, text, priority) { ok, _ ->
+            record(if (ok) Store.Outcome.SENT else Store.Outcome.FAILED)
+        }
     }
 }

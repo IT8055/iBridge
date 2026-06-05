@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Message outcome chip colours -->
+    <color name="outcome_sent">#2E7D32</color>
+    <color name="outcome_failed">#C62828</color>
+    <color name="outcome_blocked">#EF6C00</color>
 </resources>

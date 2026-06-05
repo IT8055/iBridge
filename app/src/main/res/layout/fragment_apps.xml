@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Default quiet hours"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Applies to apps set to “Use default”. Per-app schedules override it."
+        android:textSize="12sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:paddingBottom="4dp" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/quiet_enabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Don't mirror during quiet hours" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/quiet_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="time"
+            android:hint="23:00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="to"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
+
+        <EditText
+            android:id="@+id/quiet_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="time"
+            android:hint="07:00" />
+
+        <Button
+            android:id="@+id/save_quiet"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="?android:attr/listDivider" />
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:hint="Filter by app name" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="6dp"
+        android:paddingBottom="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp" />
+
+        <Spinner
+            android:id="@+id/sort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/status_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleLine="true"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_all"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All"
+            android:checked="true" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_allowed"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Allowed" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_blocked"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blocked" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No apps yet. Once apps notify you, they'll appear here to allow, block, or schedule."
+        android:paddingTop="16dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="6dp"
+        android:clipToPadding="false" />
+</LinearLayout>

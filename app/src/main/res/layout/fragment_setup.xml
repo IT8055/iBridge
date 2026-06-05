@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
-            android:text="iBridge mirrors this phone's notifications to an iPhone and Apple Watch using the free ntfy service.\n\n1) On the iPhone, install the free &quot;ntfy&quot; app from the App Store.\n\n2) Pick a private channel below: tap &quot;Generate random&quot; to create an unguessable topic, then &quot;Save topic&quot;. Keep it secret - anyone who knows it can read your notifications.\n\n3) In the ntfy app on the iPhone, tap + and subscribe to the SAME topic on the default server (ntfy.sh). Tap Allow when it asks about notifications.\n\nThen go back, tap &quot;Grant notification access&quot;, enable iBridge, and turn mirroring on. Notifications will reach the iPhone and mirror to the Apple Watch automatically.\n\nUse &quot;Share topic&quot; to send the topic to whoever owns the iPhone/Watch." />
+            android:text="iBridge mirrors this phone's notifications to an iPhone and Apple Watch using the free ntfy service.\n\n1) On the iPhone, install the free &quot;ntfy&quot; app from the App Store.\n\n2) Pick a private channel below: tap &quot;Generate random&quot; to create an unguessable topic, then &quot;Save topic&quot;. Keep it secret - anyone who knows it can read your notifications.\n\n3) In the ntfy app on the iPhone, tap + and subscribe to the SAME topic on the default server (ntfy.sh). Tap Allow when it asks about notifications.\n\nThen tap &quot;Grant notification access&quot; below, enable iBridge, and turn mirroring on from the Dashboard. Use &quot;Share topic&quot; to send the topic to whoever owns the iPhone/Watch." />
 
         <TextView
             android:layout_width="wrap_content"
@@ -67,6 +67,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Share topic with someone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/listDivider" />
+
+        <Button
+            android:id="@+id/grant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Grant notification access" />
+
+        <Button
+            android:id="@+id/test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send test notification" />
 
     </LinearLayout>
 </ScrollView>
