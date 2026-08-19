@@ -9,13 +9,46 @@ import java.net.URL
 object Store {
     private const val NAME = "ibridge"
     private const val LOG_CAP = 200
+    const val DEFAULT_SERVER = "https://ntfy.sh"
     private fun p(c: Context) = c.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
     fun topic(c: Context): String = p(c).getString("topic", "") ?: ""
     fun setTopic(c: Context, v: String) = p(c).edit().putString("topic", v.trim()).apply()
 
     fun server(c: Context): String =
-        (p(c).getString("server", "https://ntfy.sh") ?: "https://ntfy.sh").trimEnd('/')
+        (p(c).getString("server", DEFAULT_SERVER) ?: DEFAULT_SERVER).trimEnd('/')
+
+    fun setServer(c: Context, v: String) =
+        p(c).edit().putString("server", normalizeServer(v)).apply()
+
+    fun isDefaultServer(c: Context): Boolean = server(c) == DEFAULT_SERVER
+
+    /** Access token for a self-hosted server that requires auth. Empty means send unauthenticated. */
+    fun token(c: Context): String = p(c).getString("token", "") ?: ""
+    fun setToken(c: Context, v: String) = p(c).edit().putString("token", v.trim()).apply()
+
+    /**
+     * Cleans up a user-typed server URL: blank falls back to [DEFAULT_SERVER], a missing scheme
+     * becomes https, and any trailing slash is dropped. Assumes [validateServer] already passed.
+     */
+    fun normalizeServer(v: String): String {
+        val s = v.trim().trimEnd('/')
+        if (s.isEmpty()) return DEFAULT_SERVER
+        return if (s.contains("://")) s else "https://$s"
+    }
+
+    /** Null if [v] is a usable ntfy base URL, otherwise a message explaining what is wrong. */
+    fun validateServer(v: String): String? {
+        val s = normalizeServer(v)
+        val url = try {
+            URL(s)
+        } catch (e: Exception) {
+            return "Not a valid URL"
+        }
+        if (url.protocol !in setOf("http", "https")) return "Server must be http or https"
+        if (url.host.isNullOrBlank()) return "Server URL is missing a host name"
+        return null
+    }
 
     fun enabled(c: Context): Boolean = p(c).getBoolean("enabled", true)
     fun setEnabled(c: Context, v: Boolean) = p(c).edit().putBoolean("enabled", v).apply()
@@ -210,6 +243,7 @@ object Ntfy {
     ) {
         val topic = Store.topic(context)
         val server = Store.server(context)
+        val token = Store.token(context)
         if (topic.isBlank()) {
             callback?.invoke(false, "No ntfy topic set")
             return
@@ -231,11 +265,13 @@ object Ntfy {
                     readTimeout = 10000
                     doOutput = true
                     setRequestProperty("Content-Type", "application/json")
+                    if (token.isNotEmpty()) setRequestProperty("Authorization", "Bearer $token")
                 }
                 conn.outputStream.use { it.write(json.toByteArray(Charsets.UTF_8)) }
                 val code = conn.responseCode
                 ok = code in 200..299
-                msg = "HTTP $code"
+                msg = if (code == 401 || code == 403) "HTTP $code — server needs an access token"
+                else "HTTP $code"
             } catch (e: Exception) {
                 msg = e.message ?: "error"
             } finally {

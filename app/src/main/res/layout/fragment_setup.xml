@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
-            android:text="iBridge mirrors this phone's notifications to an iPhone and Apple Watch using the free ntfy service.\n\n1) On the iPhone, install the free &quot;ntfy&quot; app from the App Store.\n\n2) Pick a private channel below: tap &quot;Generate random&quot; to create an unguessable topic, then &quot;Save topic&quot;. Keep it secret - anyone who knows it can read your notifications.\n\n3) In the ntfy app on the iPhone, tap + and subscribe to the SAME topic on the default server (ntfy.sh). Tap Allow when it asks about notifications.\n\nThen tap &quot;Grant notification access&quot; below, enable iBridge, and turn mirroring on from the Dashboard. Use &quot;Share topic&quot; to send the topic to whoever owns the iPhone/Watch." />
+            android:text="iBridge mirrors this phone's notifications to an iPhone and Apple Watch using the free ntfy service.\n\n1) On the iPhone, install the free &quot;ntfy&quot; app from the App Store.\n\n2) Pick a private channel below: tap &quot;Generate random&quot; to create an unguessable topic, then &quot;Save topic&quot;. Keep it secret - anyone who knows it can read your notifications.\n\n3) In the ntfy app on the iPhone, tap + and subscribe to the SAME topic on the same server. Tap Allow when it asks about notifications.\n\nThen tap &quot;Grant notification access&quot; below, enable iBridge, and turn mirroring on from the Dashboard. Use &quot;Share topic&quot; to send the details to whoever owns the iPhone/Watch." />
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,11 +56,65 @@
                 android:text="Copy" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ntfy server"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:paddingTop="4dp"
+            android:paddingBottom="6dp"
+            android:text="Leave this as ntfy.sh unless you run your own ntfy server. If you self-host, enter its address here and subscribe to the same server in the ntfy app on the iPhone." />
+
+        <EditText
+            android:id="@+id/server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:hint="https://ntfy.sh" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:text="Access token (only if your server requires one)" />
+
+        <EditText
+            android:id="@+id/token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="tk_..." />
+
+        <Button
+            android:id="@+id/reset_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reset to ntfy.sh" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/listDivider" />
+
         <Button
             android:id="@+id/save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save topic" />
+            android:text="Save settings" />
 
         <Button
             android:id="@+id/share"

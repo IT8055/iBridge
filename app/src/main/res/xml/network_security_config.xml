@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The only host iBridge talks to is the ntfy server the user picks, so cleartext has to be
+  permitted for self-hosted servers reachable only over plain HTTP on a LAN. The Setup screen
+  warns when a http:// address is saved.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

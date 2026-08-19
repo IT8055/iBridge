@@ -70,7 +70,8 @@ class DashboardFragment : Fragment() {
         status.text = when {
             !granted -> "✗ Notification access not granted. Open Setup to grant it."
             topic.isBlank() -> "⚠ No ntfy topic set yet. Open Setup to create one."
-            else -> "✓ Ready — mirroring to ntfy."
+            Store.isDefaultServer(ctx) -> "✓ Ready — mirroring to ntfy."
+            else -> "✓ Ready — mirroring to ${Store.server(ctx)}."
         }
         enabled.isChecked = Store.enabled(ctx)
         topicView.text = topic.ifBlank { "(not set)" }

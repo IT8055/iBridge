@@ -16,6 +16,7 @@ Android phone (iBridge app)
 ## Features
 
 - **Direct to ntfy** — no relay or backend to run; the app talks to ntfy.sh itself.
+- **Bring your own server** — point iBridge at a self-hosted ntfy instance, with an optional access token.
 - **Private channels** — generate a random, unguessable ntfy topic in one tap.
 - **On-phone filtering** — block/allow individual apps; only what you want reaches your watch.
 - **Quiet hours** — pause mirroring during a time window (handles overnight ranges).
@@ -37,6 +38,12 @@ Android phone (iBridge app)
 5. Turn the **Mirroring enabled** switch on, then **Send test notification** to confirm it reaches your watch.
 
 > **Samsung tip:** to stop the OS killing the listener, set **Settings → Apps → iBridge → Battery → Unrestricted**.
+
+### Using your own ntfy server
+
+If you self-host [ntfy](https://docs.ntfy.sh/install/), enter its address in **Setup guide → ntfy server** (for example `https://ntfy.example.com`) and tap **Save settings**. A bare host name is assumed to be `https://`. If your server denies anonymous publishing, paste a [ntfy access token](https://docs.ntfy.sh/config/#access-tokens) into the **Access token** field — iBridge sends it as a `Bearer` header. **Reset to ntfy.sh** puts things back to the default and clears the token.
+
+Subscribe to the same topic on the same server in the iPhone ntfy app (add the server under its settings first). Plain `http://` addresses work for LAN-only servers, but notification content travels unencrypted — iBridge warns when you save one.
 
 ## Building
 
